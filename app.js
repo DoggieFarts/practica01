@@ -6,6 +6,7 @@ const puerto = process.env.PORT || 3000;
 app.use(bodyparser.urlencoded({extended: false}));
 app.use(bodyparser.json());
 
+
 let proyectos = [{ id: 1, nombre: 'Proyecto 1', descripcion: 'Descripcion 1', fechaInicio: "10/07/22", fechaFin: "10/08/22" },
 { id: 2, nombre: 'Proyecto 2', descripcion: 'Descripcion 2', fechaInicio: "10/07/22", fechaFin: "10/08/22" },
 { id: 3, nombre: 'Proyecto 3', descripcion: 'Descripcion 3', fechaInicio: "10/07/22", fechaFin: "10/08/22" },
@@ -198,3 +199,231 @@ app.get('/proyectos/:id/tareas?fechaAsignacion=:fechaAsignacion', (req, res) => 
 app.listen(puerto, () => {
     console.log("Servidor en el puerto " + puerto);
 } );
+
+//Documentacion de la API
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerOptions = {
+    swaggerDefinition: {
+        info: {
+            title: 'API de proyectos y tareas',
+            version: '1.0.0',
+            description: 'API de proyectos y tareas',
+            contact: {
+                name: 'Antonio David Gutiérrez Páez',
+                email: 'david212gutierrez@gmail.com'
+            },
+            servers: ['http://localhost:3000'],
+            basePath: '/',
+            produces: ['application/json'],
+            consumes: ['application/json'],
+            schemes: ['http', 'https']
+        },
+    },
+    apis: ['./app.js']
+} ;
+const swaggerDocs = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+module.exports = app;
+
+/**
+ * @swagger
+ * /proyectos:
+ *  get:
+ *    summary: Obtener todos los proyectos
+ *    description: Obtener todos los proyectos
+ *    responses:
+ *     200:
+ *      description: Lista de proyectos
+ *      content:
+ *       application/json:
+ *       schema:
+ *        type: array
+ */
+
+/**
+ * @swagger
+ * /proyectos/{id}:
+ *  get:
+ *   summary: Obtener un proyecto
+ *   description: Obtener un proyecto
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      description: id del proyecto
+ *      required: true
+ *      schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 10
+ *
+ */
+
+/**
+ * @swagger
+ * /proyectos:
+ *  post:
+ *   summary: Crear un proyecto
+ *   description: Crear un proyecto
+ *   parameters:
+ *    - in: body
+ *      name: proyecto
+ *      description: Proyecto a crear
+ *      required: true
+ *      schema:
+ *       type: object
+ *       required:
+ *        - nombre
+ *        - descripcion
+ *        - fechaInicio
+ *        - fechaFin
+ *       properties:
+ *        nombre:
+ *         type: string
+ *        description:
+ *         type: string
+ *        fechaInicio:
+ *         type: string
+ *        fechaFin:
+ *         type: string
+ *   responses:
+ *    201:
+ *     description: Proyecto creado
+ *     content:
+ *      application/json:
+ *      schema:
+ *       type: object
+ *       properties:
+ *        id:
+ *        type: integer
+ *
+ */
+
+/**
+ * @swagger
+ * /proyectos/{id}:
+ *  put:
+ *   summary: Actualizar un proyecto
+ *   description: Actualizar un proyecto
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      description: id del proyecto
+ *      required: true
+ *      schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 10
+ *       properties:
+ *        nombre:
+ *         type: string
+ *        description:
+ *         type: string
+ *    - in: body
+ *      name: proyecto
+ *      description: Proyecto a actualizar
+ *      required: true
+ *      schema:
+ *       type: object
+ *       required:
+ *       - nombre
+ *       - descripcion
+ *       - fechaInicio
+ *       - fechaFin
+ *       properties:
+ *        nombre:
+ *         type: string
+ *        description:
+ *         type: string
+ *        fechaInicio:
+ *         type: string
+ *        fechaFin:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * /proyectos/{id}:
+ *  delete:
+ *   summary: Eliminar un proyecto
+ *   description: Eliminar un proyecto
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *
+ */
+
+/**
+ * @swagger
+ * /proyectos/{id}/tareas:
+ *  get:
+ *   summary: Obtener todas las tareas de un proyecto
+ *   description: Obtener todas las tareas de un proyecto
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      description: id del proyecto
+ *      required: true
+ *      schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 10
+ *       properties:
+ *        nombre:
+ *         type: string
+ *        description:
+ *         type: string
+ *        fechaInicio:
+ *         type: string
+ *        fechaFin:
+ *         type: string
+ */
+
+/**
+ * @swagger
+ * /proyectos/{id}/tareas/{idProyecto}:
+ *  get:
+ *   summary: Obtener una tarea de un proyecto
+ *   description: Obtener una tarea de un proyecto
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      description: id del proyecto
+ *      required: true
+ *      schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 10
+ *       properties:
+ *        nombre:
+ *         type: string
+ *        description:
+ *         type: string
+ *    - in: path
+ *      name: idProyecto
+ *      description: id del proyecto en la tarea
+ *      required: true
+ *      schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 10
+ *
+ */
+
+/**
+ * @swagger
+ * /proyectos/{id}/tareas?status={status}:
+ *  get:
+ *   summary: Obtener todas las tareas de un proyecto con un status
+ *   description: Obtener todas las tareas de un proyecto con un status
+ *   parameters:
+ *    - in: path
+ *      name: id
+ *      description: id del proyecto
+ *      required: true
+ *      schema:
+ *       type: integer
+ *       minimum: 1
+ *       maximum: 10
+ *
+ */
